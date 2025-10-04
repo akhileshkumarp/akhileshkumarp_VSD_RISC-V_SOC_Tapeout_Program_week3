@@ -3,7 +3,7 @@ Welcome to the week 3 repo akhileshkumarp_VSD_RISC-V_SOC_Tapeout_Program_week_3 
 This week_3 has the follwing conents: 
 
 Post Synthesis GLS & STA Fundamentals
-Part1 Post Synthesis GLS
+Part 1 Post Synthesis GLS
 Part 2 Fundamentals of STA (Static Timing Analysis)
 Part 3 Generate Timing Graphs with OpenSTA
 
