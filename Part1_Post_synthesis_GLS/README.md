@@ -198,6 +198,7 @@ stat
 ```yosys
 write_verilog -noattr output/post_synth_sim/vsdbabysoc.synth.v
 ```
+![Write Synthesized Netlist](image_11.png)
 
 ---
 
@@ -207,8 +208,17 @@ write_verilog -noattr output/post_synth_sim/vsdbabysoc.synth.v
 ### **Step 1: Compile the Testbench**
 Run the following `iverilog` command to compile the testbench:
 ```bash
-iverilog -o output/post_synth_sim/post_synth_sim.out -DPOST_SYNTH_SIM -DFUNCTIONAL -DUNIT_DELAY=#1 -I src/include -I src/module src/module/testbench.v
+
+iverilog -o output/post_synth_sim/post_synth_sim.out \
+  -DPOST_SYNTH_SIM -DFUNCTIONAL -DUNIT_DELAY=#1 \
+  -I src/include -I src/module -I output/post_synth_sim/ \
+  -s vsdbabysoc_tb \
+  src/module/testbench.v
 ```
+
+simulation command run 
+![Simulation Command Run](image_12.png)
+
 ---
 ### **Step 2: Navigate to the Post-Synthesis Simulation Output Directory**
 ```bash
@@ -220,11 +230,11 @@ cd output/post_synth_sim/
 ```bash
 ./post_synth_sim.out
 ```
+![Run Simulation](image_13.png)
 ---
 ### **Step 4: View the Waveforms in GTKWave**
 
 ```bash
 gtkwave post_synth_sim.vcd
 ```
----
-
+![GTKWave Waveforms](image_14.png)
