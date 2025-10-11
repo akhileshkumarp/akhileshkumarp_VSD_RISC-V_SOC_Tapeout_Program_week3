@@ -4,11 +4,11 @@ This week_3 has the follwing conents:
 
 Post Synthesis GLS & STA Fundamentals:
 
-[Part 1 Post Synthesis GLS](./Part1_Post_Synthesis_GLS/README.md)
+[Part 1 Post Synthesis GLS](./Part1_Post_synthesis_GLS/README.md)
 
 [Part 2 Fundamentals of STA (Static Timing Analysis)](./Part2_Fundamentals_of_STA/README.md)
 
-[Part 3 Generate Timing Graphs with OpenSTA](./Part3_Generate_Timing_Graphs_with_OpenSTA/README.md)
+[Part 3 Generate Timing Graphs with OpenSTA](./Part3_Timing_graphs_with_OpenSTA/README.md)
 
 contents will be updated here  
 
