@@ -97,6 +97,8 @@ set_input_delay -clock clk 0 {in1 in2}
 report_checks
 ```
 
+![Timing Report Checks](image3.png)
+
 This represents a setup (max delay) corner, so the analysis focuses on setup timing by default.
 
 How to Also Get Hold (min) Paths:
@@ -105,60 +107,43 @@ If you want both setup and hold timing checks (i.e., both max and min path delay
 ```
 report_checks -path_delay min
 ```
-Here are the commands for Yosys synthesis for example1.v:
-```
-cd ~/VSDBabySoC/OpenSTA/examples/
 
-yosys
-
-read_liberty -lib nangate45_slow.lib
-
-read_verilog example1.v
-
-synth -top top
-
-show
-```
-
-Below is the netlist diagram generated using Yosys.
-
-The datapath has been annotated with delay values at each stage for easier understanding:
-
-
-
-### SPEF-Based Timing Analysis
-Here’s the same OpenSTA timing analysis flow with added SPEF-based parasitic modeling:
-
-This enables more realistic delay and slack computation by including post-layout RC data, improving timing signoff precision.
-```read_liberty /OpenSTA/examples/nangate45_slow.lib.gz
-read_verilog /OpenSTA/examples/example1.v
-link_design top
-read_spef /OpenSTA/examples/example1.dspef
-create_clock -name clk -period 10 {clk1 clk2 clk3}
-set_input_delay -clock clk 0 {in1 in2}
-report_checks
-```
-
+![Hold Path Timing Checks](image4.png)
 
 ### Timing Analysis Using a TCL Script
-To automate the timing flow, you can write the commands into a .tcl script and execute it from the OpenSTA shell.
-min_max_delays.tcl
-```
-# Load liberty files for max and min analysis
-read_liberty -max /data/VSDBabySoC/OpenSTA/examples/nangate45_slow.lib.gz
-read_liberty -min /data/VSDBabySoC/OpenSTA/examples/nangate45_fast.lib.gz
 
-# Read the gate-level Verilog netlist
-read_verilog /data/VSDBabySoC/OpenSTA/examples/example1.v
+set list_of_lib_files(1) "sky130_fd_sc_hd__tt_025C_1v80.lib"
+set list_of_lib_files(2) "sky130_fd_sc_hd__ff_100C_1v65.lib"
+set list_of_lib_files(3) "sky130_fd_sc_hd__ff_100C_1v95.lib"
+set list_of_lib_files(4) "sky130_fd_sc_hd__ff_n40C_1v56.lib"
+set list_of_lib_files(5) "sky130_fd_sc_hd__ff_n40C_1v65.lib"
+set list_of_lib_files(6) "sky130_fd_sc_hd__ff_n40C_1v76.lib"
+set list_of_lib_files(7) "sky130_fd_sc_hd__ss_100C_1v40.lib"
+set list_of_lib_files(8) "sky130_fd_sc_hd__ss_100C_1v60.lib"
+set list_of_lib_files(9) "sky130_fd_sc_hd__ss_n40C_1v28.lib"
+set list_of_lib_files(10) "sky130_fd_sc_hd__ss_n40C_1v35.lib"
+set list_of_lib_files(11) "sky130_fd_sc_hd__ss_n40C_1v40.lib"
+set list_of_lib_files(12) "sky130_fd_sc_hd__ss_n40C_1v44.lib"
+set list_of_lib_files(13) "sky130_fd_sc_hd__ss_n40C_1v76.lib"
 
-# Link the top-level design
-link_design top
+for {set i 1} {$i <= [array size list_of_lib_files]} {incr i} {
+read_liberty ./timing_libs/$list_of_lib_files($i)
+read_verilog ./vsdbabysoc.synth.v
+link_design vsdbabysoc
+current_design
+read_sdc vsdbabysoc_synthesis.sdc
+check_setup -verbose
+report_checks -path_delay min_max -fields {nets cap slew input_pins fanout} -digits {4} > ./sta_output/min_max_$list_of_lib_files($i).txt
 
-# Define clocks and input delays
-create_clock -name clk -period 10 {clk1 clk2 clk3}
-set_input_delay -clock clk 0 {in1 in2}
+exec echo "$list_of_lib_files($i)" >> ./sta_output/sta_worst_max_slack.txt
+report_worst_slack -max -digits {4} >> ./sta_output/sta_worst_max_slack.txt
 
-# Generate a full min/max timing report
-report_checks -path_delay min_max
-```
+exec echo "$list_of_lib_files($i)" >> ./sta_output/sta_worst_min_slack.txt
+report_worst_slack -min -digits {4} >> ./sta_output/sta_worst_min_slack.txt
 
+exec echo "$list_of_lib_files($i)" >> ./sta_output/sta_tns.txt
+report_tns -digits {4} >> ./sta_output/sta_tns.txt
+
+exec echo "$list_of_lib_files($i)" >> ./sta_output/sta_wns.txt
+report_wns -digits {4} >> ./sta_output/sta_wns.txt
+}
