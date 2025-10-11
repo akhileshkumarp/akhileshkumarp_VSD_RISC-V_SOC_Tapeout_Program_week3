@@ -1,17 +1,4 @@
 
-
-Step1 : Clone Open STA: 
-
-git clone https://github.com/parallaxsw/OpenSTA.git
-
-
-
-
-
-Step2: 
-
-
-
 # Timing Graphs using openSTA
 ## Introduction
 Static Timing Analysis is one of the many techniques available to verify the timing of a digital design.
@@ -109,7 +96,7 @@ set_input_delay -clock clk 0 {in1 in2}
 # Report of the timing checks for the design 
 report_checks
 ```
-<img width="956" height="815" alt="week3 1 1" src="https://github.com/user-attachments/assets/bd51604a-4b7d-45ea-ad30-a4a5439872a7" />
+
 This represents a setup (max delay) corner, so the analysis focuses on setup timing by default.
 
 How to Also Get Hold (min) Paths:
@@ -137,7 +124,7 @@ Below is the netlist diagram generated using Yosys.
 
 The datapath has been annotated with delay values at each stage for easier understanding:
 
-<img width="1307" height="808" alt="week3 1 2" src="https://github.com/user-attachments/assets/65d75614-384f-4dfa-96fa-4c58141694d3" />
+
 
 ### SPEF-Based Timing Analysis
 Here’s the same OpenSTA timing analysis flow with added SPEF-based parasitic modeling:
@@ -151,7 +138,7 @@ create_clock -name clk -period 10 {clk1 clk2 clk3}
 set_input_delay -clock clk 0 {in1 in2}
 report_checks
 ```
-<img width="953" height="820" alt="week3 1 3" src="https://github.com/user-attachments/assets/9f0bca51-9b4f-4f95-9f1e-46e8c61b4848" />
+
 
 ### Timing Analysis Using a TCL Script
 To automate the timing flow, you can write the commands into a .tcl script and execute it from the OpenSTA shell.
